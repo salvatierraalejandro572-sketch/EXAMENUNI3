@@ -1,0 +1,29 @@
+@model EXAMENUNI3.Models.Tarea
+@{
+    ViewData["Title"] = "Detalles de la Tarea";
+}
+
+<h1>Detalles de la Tarea</h1>
+<div class="card mb-4">
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">Título</dt>
+            <dd class="col-sm-9">@Model.Titulo</dd>
+            <dt class="col-sm-3">Descripción</dt>
+            <dd class="col-sm-9">@Model.Descripcion</dd>
+            <dt class="col-sm-3">Estado</dt>
+            <dd class="col-sm-9">
+                <span
+                    class="badge @(Model.Estado == "Completada" ? "bg-success" : Model.Estado == "En progreso" ? "bg-warning" : "bg-secondary")">
+                    @Model.Estado
+                </span>
+            </dd>
+            <dt class="col-sm-3">Fecha de Vencimiento</dt>
+            <dd class="col-sm-9">@Model.FechaVencimiento?.ToShortDateString()</dd>
+            <dt class="col-sm-3">Proyecto</dt>
+            <dd class="col-sm-9">@Model.Proyecto?.Nombre</dd>
+        </dl>
+    </div>
+</div>
+<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Editar</a>
+<a asp-action="Index" class="btn btn-secondary">Volver</a>

@@ -1,0 +1,26 @@
+@model EXAMENUNI3.Models.Tarea
+@{
+    ViewData["Title"] = "Eliminar Tarea";
+}
+
+<h1>Eliminar Tarea</h1>
+<div class="alert alert-danger">
+    <h4>¿Está seguro de que desea eliminar esta tarea?</h4>
+</div>
+<div class="card mb-4">
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">Título</dt>
+            <dd class="col-sm-9">@Model.Titulo</dd>
+            <dt class="col-sm-3">Estado</dt>
+            <dd class="col-sm-9">@Model.Estado</dd>
+            <dt class="col-sm-3">Proyecto</dt>
+            <dd class="col-sm-9">@Model.Proyecto?.Nombre</dd>
+        </dl>
+    </div>
+</div>
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="Id" />
+    <input type="submit" value="Eliminar" class="btn btn-danger" />
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>

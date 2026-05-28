@@ -1,0 +1,29 @@
+﻿@{
+    ViewData["Title"] = "Inicio";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Sistema de Gestión de Proyectos</h1>
+    <p class="lead">Bienvenido al sistema Mini-Jira.</p>
+    <hr class="my-4" />
+    <div class="row mt-4">
+        <div class="col-md-6 mb-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Proyectos</h5>
+                    <p class="card-text">Administra los proyectos del sistema.</p>
+                    <a asp-controller="Proyectos" asp-action="Index" class="btn btn-primary">Ir a Proyectos</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Tareas</h5>
+                    <p class="card-text">Gestiona las tareas de cada proyecto.</p>
+                    <a asp-controller="Tareas" asp-action="Index" class="btn btn-primary">Ir a Tareas</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

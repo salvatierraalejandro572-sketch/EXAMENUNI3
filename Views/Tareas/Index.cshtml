@@ -1,0 +1,40 @@
+@model IEnumerable<EXAMENUNI3.Models.Tarea>
+@{
+    ViewData["Title"] = "Tareas";
+}
+
+<h1>Tareas</h1>
+<p><a asp-action="Create" class="btn btn-primary">+ Crear Nueva Tarea</a></p>
+
+<table class="table table-striped table-hover">
+    <thead class="table-dark">
+        <tr>
+            <th>Título</th>
+            <th>Estado</th>
+            <th>Vencimiento</th>
+            <th>Proyecto</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Titulo</td>
+                <td>
+                    <span
+                        class="badge @(item.Estado == "Completada" ? "bg-success" : item.Estado == "En progreso" ? "bg-warning" : "bg-secondary")">
+                        @item.Estado
+                    </span>
+                </td>
+                <td>@item.FechaVencimiento?.ToShortDateString()</td>
+                <td>@item.Proyecto?.Nombre</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Detalles</a>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Editar</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Eliminar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
