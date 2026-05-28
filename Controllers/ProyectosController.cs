@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using EXAMENUNI3.Data.Repositories;
@@ -16,14 +17,17 @@ public class ProyectosController : Controller
 
     public async Task<IActionResult> Index()
     {
-        var proyectos = await _proyectoRepository.GetAllAsync();
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId == null) return View(new List<Proyecto>());
+        var proyectos = await _proyectoRepository.GetAllByUserAsync(userId);
         return View(proyectos);
     }
 
     public async Task<IActionResult> Details(int id)
     {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         var proyecto = await _proyectoRepository.GetByIdWithTareasAsync(id);
-        if (proyecto == null) return NotFound();
+        if (proyecto == null || proyecto.UserId != userId) return NotFound();
         return View(proyecto);
     }
 
@@ -38,6 +42,7 @@ public class ProyectosController : Controller
     [Authorize]
     public async Task<IActionResult> Create(Proyecto proyecto)
     {
+        proyecto.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (ModelState.IsValid)
         {
             await _proyectoRepository.AddAsync(proyecto);
@@ -49,8 +54,9 @@ public class ProyectosController : Controller
     [Authorize]
     public async Task<IActionResult> Edit(int id)
     {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         var proyecto = await _proyectoRepository.GetByIdAsync(id);
-        if (proyecto == null) return NotFound();
+        if (proyecto == null || proyecto.UserId != userId) return NotFound();
         return View(proyecto);
     }
 
@@ -60,6 +66,7 @@ public class ProyectosController : Controller
     public async Task<IActionResult> Edit(int id, Proyecto proyecto)
     {
         if (id != proyecto.Id) return NotFound();
+        proyecto.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (ModelState.IsValid)
         {
             await _proyectoRepository.UpdateAsync(proyecto);
@@ -71,8 +78,9 @@ public class ProyectosController : Controller
     [Authorize]
     public async Task<IActionResult> Delete(int id)
     {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         var proyecto = await _proyectoRepository.GetByIdWithTareasAsync(id);
-        if (proyecto == null) return NotFound();
+        if (proyecto == null || proyecto.UserId != userId) return NotFound();
         return View(proyecto);
     }
 
@@ -81,14 +89,19 @@ public class ProyectosController : Controller
     [Authorize]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var proyecto = await _proyectoRepository.GetByIdAsync(id);
+        if (proyecto == null || proyecto.UserId != userId) return NotFound();
         await _proyectoRepository.DeleteAsync(id);
         return RedirectToAction(nameof(Index));
     }
 
     [HttpGet]
+    [Authorize]
     public async Task<IActionResult> GetProyectosJson()
     {
-        var proyectos = await _proyectoRepository.GetAllAsync();
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+        var proyectos = await _proyectoRepository.GetAllByUserAsync(userId);
         return Json(proyectos);
     }
 }

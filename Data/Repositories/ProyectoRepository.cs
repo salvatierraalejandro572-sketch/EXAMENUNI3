@@ -20,6 +20,15 @@ public class ProyectoRepository : IProyectoRepository
             .ToListAsync();
     }
 
+    public async Task<List<Proyecto>> GetAllByUserAsync(string userId)
+    {
+        return await _context.Proyectos
+            .Where(p => p.UserId == userId)
+            .Include(p => p.Tareas)
+            .OrderBy(p => p.FechaInicio)
+            .ToListAsync();
+    }
+
     public async Task<Proyecto?> GetByIdAsync(int id)
     {
         return await _context.Proyectos.FindAsync(id);

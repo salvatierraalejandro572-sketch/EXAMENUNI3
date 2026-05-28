@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -19,7 +20,9 @@ public class TareasController : Controller
 
     public async Task<IActionResult> Index()
     {
-        var tareas = await _tareaRepository.GetAllAsync();
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId == null) return View(new List<Tarea>());
+        var tareas = await _tareaRepository.GetAllByUserAsync(userId);
         return View(tareas);
     }
 
@@ -96,7 +99,10 @@ public class TareasController : Controller
 
     private async Task PopulateProyectosDropDownListAsync(object? selectedProyectoId = null)
     {
-        var proyectos = await _proyectoRepository.GetAllAsync();
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var proyectos = userId != null
+            ? await _proyectoRepository.GetAllByUserAsync(userId)
+            : new List<Proyecto>();
         ViewBag.ProyectoId = new SelectList(proyectos, "Id", "Nombre", selectedProyectoId);
     }
 }

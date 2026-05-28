@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using EXAMENUNI3.Models;
 
@@ -18,6 +19,10 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             entity.HasKey(p => p.Id);
             entity.Property(p => p.Nombre).IsRequired().HasMaxLength(100);
             entity.Property(p => p.Descripcion).HasMaxLength(500);
+            entity.HasOne<IdentityUser>()
+                  .WithMany()
+                  .HasForeignKey(p => p.UserId)
+                  .OnDelete(DeleteBehavior.Cascade);
         });
 
         builder.Entity<Tarea>(entity =>

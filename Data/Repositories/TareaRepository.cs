@@ -20,6 +20,15 @@ public class TareaRepository : ITareaRepository
             .ToListAsync();
     }
 
+    public async Task<List<Tarea>> GetAllByUserAsync(string userId)
+    {
+        return await _context.Tareas
+            .Include(t => t.Proyecto)
+            .Where(t => t.Proyecto!.UserId == userId)
+            .OrderBy(t => t.FechaVencimiento)
+            .ToListAsync();
+    }
+
     public async Task<List<Tarea>> GetByProyectoIdAsync(int proyectoId)
     {
         return await _context.Tareas

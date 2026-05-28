@@ -6,6 +6,8 @@ public class Proyecto
 {
     public int Id { get; set; }
 
+    public string? UserId { get; set; }
+
     [Required(ErrorMessage = "El nombre es obligatorio")]
     [MaxLength(100, ErrorMessage = "El nombre no puede exceder 100 caracteres")]
     public string Nombre { get; set; } = string.Empty;
