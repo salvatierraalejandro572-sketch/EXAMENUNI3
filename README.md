@@ -39,14 +39,15 @@ Aplicación web desarrollada con **ASP.NET Core MVC** y **Entity Framework Core 
 
 ### Proyecto
 
-| Propiedad         | Tipo                 | Restricciones            |
-| ----------------- | -------------------- | ------------------------ |
-| Id                | int                  | PK, autoincremental      |
-| Nombre            | string               | Required, MaxLength(100) |
-| Descripcion       | string?              | Opcional                 |
-| FechaInicio       | DateTime             | Requerida                |
-| FechaFinalizacion | DateTime?            | Opcional                 |
-| Tareas            | ICollection\<Tarea\> | Navegación 1:N           |
+| Propiedad         | Tipo                 | Restricciones                          |
+| ----------------- | -------------------- | -------------------------------------- |
+| Id                | int                  | PK, autoincremental                    |
+| UserId            | string?              | FK → AspNetUsers.Id, Cascade Delete    |
+| Nombre            | string               | Required, MaxLength(100)               |
+| Descripcion       | string?              | Opcional                               |
+| FechaInicio       | DateTime             | Requerida                              |
+| FechaFinalizacion | DateTime?            | Opcional                               |
+| Tareas            | ICollection\<Tarea\> | Navegación 1:N                         |
 
 ### Tarea
 
@@ -114,19 +115,20 @@ Abrir el navegador en: **http://localhost:5272**
 - **CRUD completo** de Proyectos y Tareas
 - **Autenticación** con ASP.NET Core Identity (Register / Login / Logout)
 - **Rutas protegidas**: Crear, Editar y Eliminar requieren autenticación (`[Authorize]`)
-- **Endpoint JSON**: `GET /Proyectos/GetProyectosJson` devuelve todos los proyectos en formato JSON
+- **Aislamiento de datos por usuario**: cada usuario ve y gestiona únicamente sus propios proyectos y tareas. Al crear un proyecto se asigna automáticamente el `UserId` del usuario autenticado; los listados y el dropdown de tareas filtran por ese ID
+- **Endpoint JSON**: `GET /Proyectos/GetProyectosJson` devuelve los proyectos del usuario autenticado en formato JSON (requiere autenticación)
 - **Bootstrap 5** para UI responsiva
 - **Tag Helpers** en todos los formularios
 - **Validación** del lado del servidor con Data Annotations
-- **Cascade Delete**: al eliminar un Proyecto se eliminan automáticamente sus Tareas
+- **Cascade Delete doble**: al eliminar un Usuario se eliminan sus Proyectos; al eliminar un Proyecto se eliminan sus Tareas
 
 ---
 
 ## Endpoints API
 
-| Método | Ruta                          | Descripción                                    | Requiere Auth |
-| ------ | ----------------------------- | ---------------------------------------------- | ------------- |
-| GET    | `/Proyectos/GetProyectosJson` | Lista completa de proyectos con tareas en JSON | No            |
+| Método | Ruta                          | Descripción                                         | Requiere Auth |
+| ------ | ----------------------------- | --------------------------------------------------- | ------------- |
+| GET    | `/Proyectos/GetProyectosJson` | Proyectos del usuario autenticado con tareas en JSON | Sí            |
 
 ---
 
