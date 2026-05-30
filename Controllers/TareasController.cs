@@ -26,10 +26,12 @@ public class TareasController : Controller
         return View(tareas);
     }
 
+    [Authorize]
     public async Task<IActionResult> Details(int id)
     {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         var tarea = await _tareaRepository.GetByIdAsync(id);
-        if (tarea == null) return NotFound();
+        if (tarea == null || tarea.Proyecto?.UserId != userId) return NotFound();
         return View(tarea);
     }
 
@@ -58,8 +60,9 @@ public class TareasController : Controller
     [Authorize]
     public async Task<IActionResult> Edit(int id)
     {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         var tarea = await _tareaRepository.GetByIdAsync(id);
-        if (tarea == null) return NotFound();
+        if (tarea == null || tarea.Proyecto?.UserId != userId) return NotFound();
         await PopulateProyectosDropDownListAsync(tarea.ProyectoId);
         return View(tarea);
     }
@@ -83,8 +86,9 @@ public class TareasController : Controller
     [Authorize]
     public async Task<IActionResult> Delete(int id)
     {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         var tarea = await _tareaRepository.GetByIdAsync(id);
-        if (tarea == null) return NotFound();
+        if (tarea == null || tarea.Proyecto?.UserId != userId) return NotFound();
         return View(tarea);
     }
 
@@ -93,6 +97,9 @@ public class TareasController : Controller
     [Authorize]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var tarea = await _tareaRepository.GetByIdAsync(id);
+        if (tarea == null || tarea.Proyecto?.UserId != userId) return NotFound();
         await _tareaRepository.DeleteAsync(id);
         return RedirectToAction(nameof(Index));
     }
